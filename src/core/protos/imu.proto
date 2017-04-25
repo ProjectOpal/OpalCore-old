@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package core.sensors;
+
+// Provides euler rates from gyroscope.
+message Gyro {
+  sint32 x = 1;
+  sint32 y = 2;
+  sint32 z = 3;
+}
+
+// Provides acceleration in 3 axis.
+message Accel {
+  sint32 x = 1;
+  sint32 y = 2;
+  sint32 z = 3;
+}
+
+// Provides Location information.
+message Location {
+  double lat = 1;
+  double lon = 2;
+  sint32 alt = 3;
+}
+
+// Provides filter/computer state information.
+message ComputedState {
+  sint32 roll = 1;
+  sint32 pitch = 2;
+  sint32 yaw = 3;
+  Location loc = 4;
+}
