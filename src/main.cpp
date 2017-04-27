@@ -5,7 +5,8 @@
 using core::sensors::ComputedState;
 
 int main(void) {
-  ComputedState computed_state = core_sensors_ComputedState_init_zero;
+  ComputedState computed_state;
+  computed_state.roll = 1;
 
   return 0;
 }
