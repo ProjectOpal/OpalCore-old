@@ -1,30 +1,50 @@
+"""
+# Creates C++ header from Nanopb proto H header.
+#
+# Author: Sam Rosenstein
+# Date: 4/27/17
+#
+# Runs in CMake script during build to create HPP headers with correct
+# namespaces for protobuf messages.
+#
+# Example: NanoPB compiles 'package core.sensors' to 'core_sensors_<message_name>'
+#          This script takes 'core_sensors_<message_name>' and creates nested
+#          namespaces: 'namespace core { namespace sensors { ... }}'
+#
+# Run: python3 nanopb_cpp.py <nanopb_file.pb.h>
+"""
 import glob
 import re, sys
 
-# Read the build directory
-# Find all *.pb.h files
-# Read over those files and find all of the functions within the files
-# Create the hpp file with the correct classes
+# TODO @smr277: Create default constructor for protos
 
+# @arg header_name: NanoPB header name (*.pb.h)
+# @arg deconstructed_structs: A list of dictionaries with
+#   {'namespaces':[], 'msg_name':str} where the namespaces is an ordered list of
+#   namespaces, and the msg_name is the message name.
+# @return: The string to write to the new header file
 def CreateHeader(header_name, deconstructed_structs):
   output_string = ['#include "{}"\n'.format(header_name)]
   for struct in deconstructed_structs:
     for i, namespace in enumerate(struct['namespaces']):
       output_string.append(" " * i + "namespace " + namespace + " {")
-    struct_old_name = "_".join(struct['namespaces']) + "_" + struct['var_name']
+    struct_old_name = "_".join(struct['namespaces']) + "_" + struct['msg_name']
     output_string.append(" " * len(struct['namespaces']) + "  " +
-      "typedef {} {};".format(struct_old_name, struct['var_name']))
+      "typedef {} {};".format(struct_old_name, struct['msg_name']))
     for i in range(len(struct['namespaces']) - 1, -1, -1):
       output_string.append(" " * i + "}")
 
   output_string = "\n".join(output_string)
   return output_string
 
+# @arg nanoPBvar_name: The NanoPB variable name to parse
+# return: A dictionary with {'namespaces':[], msg_name:str} where the namespaces
+#     is an ordered list of namespaces, and the msg_name is the message name.
 def DeconsrtuctNanoPBVar(nanoPBvar_name):
   names = nanoPBvar_name.split('_')
   output = {}
   output['namespaces'] = [name.strip() for name in names[:-1]]
-  output['var_name'] = names[-1].strip()
+  output['msg_name'] = names[-1].strip()
   return output
 
 

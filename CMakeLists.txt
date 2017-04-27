@@ -31,6 +31,7 @@ foreach(item ${PROTO_HDRS})
   endif(item)
 endforeach(item ${PROTO_HDRS})
 
+# Process each proto.pb.h file into proto.pb.hpp files
 foreach(proto_hdr ${ONLY_PROTO_HDRS})
   string(CONCAT hpp_proto_hdr "${proto_hdr}" "pp")
   add_custom_command(
@@ -41,9 +42,5 @@ foreach(proto_hdr ${ONLY_PROTO_HDRS})
   )
   set(PROTO_CPP_HDRS ${PROTO_CPP_HDRS} ${hpp_proto_hdr})
 endforeach()
-
-# set_source_files_properties(${PROTO_CPP_HDRS}
-#     PROPERTIES GENERATED TRUE)
-
 
 add_executable(main src/main.cpp ${PROTO_SRCS} ${PROTO_HDRS} ${PROTO_CPP_HDRS})
