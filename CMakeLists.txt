@@ -97,10 +97,14 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -Werror -Wextra -Wpedantic -pthrea
 ################# Main COMPILATION #####################
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src/include")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src/HIL")
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src/core")
-set(HIL "${CMAKE_CURRENT_SOURCE_DIR}/src/core/hecate.hpp")
-set (HIL "${CMAKE_CURRENT_SOURCE_DIR}/src/core/hecate.cpp")
+file (GLOB HIL "${CMAKE_CURRENT_SOURCE_DIR}/src/HIL/*.cpp"
+               "{CMAKE_CURRENT_SOURCE_DIR}/src/HIL/*.h"
+               "{CMAKE_CURRENT_SOURCE_DIR}/src/HIL/*.hpp")
+set(HIL ${HIL} "${CMAKE_CURRENT_SOURCE_DIR}/src/core/hecate.hpp")
+set (HIL ${HIL} "${CMAKE_CURRENT_SOURCE_DIR}/src/core/hecate.cpp")
 
 add_executable(main src/main.cpp ${PROTO_SRCS} ${PROTO_HDRS} ${PROTO_CPP_HDRS}
 ${FREERTOS_SRC} ${FREERTOS_CPP_SRC} ${FREERTOS_SRC_HDRS} ${HIL})

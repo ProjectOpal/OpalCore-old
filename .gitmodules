@@ -4,6 +4,3 @@
 [submodule "FreeRTOS"]
 	path = FreeRTOS
 	url = https://github.com/projectopal/FreeRTOS
-[submodule "freertos-addons"]
-	path = freertos-addons
-	url = https://github.com/michaelbecker/freertos-addons
