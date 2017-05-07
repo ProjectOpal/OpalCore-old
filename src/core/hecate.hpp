@@ -21,8 +21,8 @@ namespace core {
   template <class T>
   class ReadWriterPreferWriterWrapper{
    public:
-    ReadWriterPreferWriterWrapper() try : box(new T()),
-        Lock(new cpp_freertos::ReadWriteLockPreferWriter())
+    ReadWriterPreferWriterWrapper() try : Lock(new cpp_freertos::ReadWriteLockPreferWriter()),
+                                          box(new T())
     {}
     catch(cpp_freertos::ReadWriteLockCreateException &ex) {
       // cout << "Caught ReadWriteLockCreateException" << endl;
@@ -33,18 +33,28 @@ namespace core {
     // TODO(@smr277): Find a way to read without copying memory
     //                maybe return a const &, but need to find a simple
     //                way to grab and release the mutex
-    bool Read(T *return_t);
-    bool Write(const T &box_orig);
+    bool Read(T *return_t) {
+      Lock->ReaderLock();
+      memcpy(return_t, box, sizeof(T));
+      Lock->ReaderUnlock();
+      return true;
+    }
+    bool Write(const T &box_orig) {
+      Lock->WriterLock();
+      memcpy(box, &box_orig, sizeof(T));
+      Lock->WriterUnlock();
+      return true;
+    }
    private:
     cpp_freertos::ReadWriteLockPreferWriter *Lock;
-    T box;
+    T *box;
   };
 
   /*
   // Hectate is a static class that contains global information.
   // Information is accessed as writer-prefered.
   */
-  class Hectate {
+  class Hecate {
    public:
     /* Each proto message is wrapper in a ReaderWriterPreferWriter lock.
     // The definitions for this class is above.
@@ -62,9 +72,11 @@ namespace core {
     static ReadWriterPreferWriterWrapper<core::sensors::Location> location;
     static ReadWriterPreferWriterWrapper<core::sensors::ComputedState>
         comp_state;
+    static ReadWriterPreferWriterWrapper<core::sensors::AirSpeed>
+        airspeed;
 
    private:
-    Hectate();
+    Hecate();
   };
 
 }

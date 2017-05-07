@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package core.actuators;
+
+// Controlling a servo.
+message Servo {
+  // The port on which the servo is connected.
+  uint8 port = 1;
+  // The lowest value of the servo. Minimum is 0.
+  uint8 low_value = 2;
+  // The highest value of the servo. Maximum is 255.
+  uint8 high_value = 3;
+  // The human readable name of the servo.
+  string name = 4;
+}
+
+// Controlling a motor
+message Motor {
+  // The port on which the motor is connected.
+  uint8 port = 1;
+  // The lowest value of the motor. Minimum is 0.
+  uint8 low_value = 2;
+  // The highest value of the motor. Maximum is 255.
+  uint8 high_value = 3;
+  // The slew percemtage rate at which the motor's power will be change.
+  //  100 is a full change in the motor's speed, 0 is no change. Defaults
+  //  to 100.
+  uint8 slew_rate = 4;
+  // The human readable name of the motor.
+  string name = 5;
+}

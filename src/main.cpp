@@ -3,18 +3,16 @@
 #include "hecate.hpp"
 #include "imu.hpp"
 
+
+
 using namespace cpp_freertos;
 using namespace std;
 using namespace core;
-
-
-
+using namespace core::sensors;
 
 int main (void) {
-  SHIL::IMU imu(Ticks::MsToTicks(1000), 4000);
-  imu.Start();
-  Thread::StartScheduler();
+  shil::IMU imu(5500);
 
-  cout << "Scheduler ended!" << endl;
+  Thread::StartScheduler();
   return 0;
 }

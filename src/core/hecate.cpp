@@ -13,19 +13,8 @@
 
 using namespace core;
 
-template <class T>
-bool ReadWriterPreferWriterWrapper<T>::Read(T *return_t) {
-  Lock->ReaderLock();
-  T(this->box);
-  Lock->ReaderUnlock();
-  return true;
-}
-
-
-template <class T>
-bool ReadWriterPreferWriterWrapper<T>::Write(const T &box_orig) {
-  Lock->WriterLock();
-  this->box(box_orig);
-  Lock->WriterUnlock();
-  return true;
-}
+ReadWriterPreferWriterWrapper<sensors::Gyro> Hecate::gyro;
+ReadWriterPreferWriterWrapper<sensors::Accel> Hecate::accel;
+ReadWriterPreferWriterWrapper<sensors::Location> Hecate::location;
+ReadWriterPreferWriterWrapper<sensors::ComputedState> Hecate::comp_state;
+ReadWriterPreferWriterWrapper<sensors::AirSpeed> Hecate::airspeed;
