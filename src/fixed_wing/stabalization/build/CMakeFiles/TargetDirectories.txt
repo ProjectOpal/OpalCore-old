@@ -1,0 +1,2 @@
+/Users/sam/Documents/cuair/OpalCore/src/fixed_wing/stabalization/build/CMakeFiles/rebuild_cache.dir
+/Users/sam/Documents/cuair/OpalCore/src/fixed_wing/stabalization/build/CMakeFiles/edit_cache.dir
