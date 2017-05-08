@@ -31,5 +31,7 @@
 *.out
 *.app
 
-# ALl of build
+# All of build (and any builds)
 build/*
+*build/*
+
