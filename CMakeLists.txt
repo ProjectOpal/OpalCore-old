@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(PROJECT_OPAL C CXX)
+# set(CMAKE_VERBOSE_MAKEFILE "1")
 
 ################# PROTO COMPILATION #####################
 
@@ -14,26 +15,17 @@ include_directories(${NANOPB_INCLUDE_DIRS})
 include(${CMAKE_CURRENT_SOURCE_DIR}/extras/CMakeLists.txt)
 
 ################# FreeRTOS C++ COMPILATION #####################
-set(FREERTOS_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/freertos-addons)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${FREERTOS_DIRS}")
-find_package(Freertos REQUIRED)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/freertos-addons)
+if (NOT ${CMAKE_CROSSCOMPILING})
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
+    "-std=c++11 -Wall -Werror -Wextra -Wpedantic -pthread -O0 -g")
+endif(NOT ${CMAKE_CROSSCOMPILING})
 
 ################# Main COMPILATION #####################
-set(HDR_FILES)
-set(CPP_FILES)
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/src/core/hectate")
-# find_package(hectate REQUIRED)
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/src/SHIL")
+# Add the directories with the
 
-# PROTO_SRCS and PROTO_HDRS are generated from NanoPB.
-# PROTO_CPP_HDRS is generated from secondary cpp proto generation.
-# HDR_FILES and CPP_FILES are generated from adding add_subdirectory.
-# message(STATUS "Hdr files: ${HDR_FILES}")
-message(STATUS "HPP file: ${HDR_FILES}")
+# add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/src/core/hecate")
 
-# TODO (@smr277): Figure out how to get rid of this
-include_directories("${CMAKE_CURRENT_SOcURCE_DIR}/src/SHIL")
-
-add_executable(main src/main.cpp ${PROTO_SRCS} ${PROTO_HDRS} ${PROTO_CPP_HDRS}
-               ${HDR_FILES} ${CPP_FILES})
+add_executable(main src/main.cpp)
+target_link_libraries(main freertos)
