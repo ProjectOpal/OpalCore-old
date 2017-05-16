@@ -22,26 +22,7 @@ set(MODULE_REQUIREMENTS "freertos" "somethingElse")
 # Set the version of the module.
 set(MODULE_VERSION "0.1")
 
-################# Don't need to touch anything below ######################
-
-project(${MODULE_NAME} VERSION ${MODULE_VERSION} LANGUAGES CXX C)
-
-if(HAS_PROTOS)
-  add_subdirectory("protos")
-  set_source_files_properties(${PROTO_HDRS} ${PROTO_SRCS}
-                              PROPERTIES GENERATED TRUE)
-endif(HAS_PROTOS)
-
-add_library(${PROJECT_NAME} STATIC ${SRCS} ${PROTO_SRCS} ${PROTO_HDRS})
-
-target_include_directories(${PROJECT_NAME} PUBLIC
-                           "${CMAKE_CURRENT_SOURCE_DIR}/.."
-                           "${CMAKE_CURRENT_BINARY_DIR}/..")
-
-if(HAS_PROTOS)
-  add_dependencies(${PROJECT_NAME} "${PROJECT_NAME}-protos")
-endif(HAS_PROTOS)
-
-target_link_libraries(${PROJECT_NAME} ${MODULE_REQUIREMENTS})
+opal_module("${MODULE_NAME}" "${MODULE_VERSION}" "${MODULE_REQUIREMENTS}"
+            "${SRCS}" "${HAS_PROTOS}")
 
 

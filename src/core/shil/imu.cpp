@@ -6,9 +6,8 @@
 //
 */
 
-#include "shil/imu.hpp"
-#include "task.h"
-#include "hecate/hecate.hpp"
+#include "core/shil/imu.hpp"
+#include "core/hecate/hecate.hpp"
 
 using namespace core;
 using namespace core::sensors;

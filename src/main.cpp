@@ -1,10 +1,11 @@
 #include "FreeRTOSmacros.hpp"
 
-#include "hecate/hecate.hpp"
-#include "shil/imu.hpp"
-
 #include <stdio.h>
 #include <iostream>
+
+#include "core/hecate/hecate.hpp"
+#include "core/shil/imu.hpp"
+
 
 using namespace cpp_freertos;
 using namespace std;

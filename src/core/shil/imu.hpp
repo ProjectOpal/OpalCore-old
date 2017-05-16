@@ -11,15 +11,15 @@
 #include <memory>
 #include <random>
 #include <chrono>
-
-#include "PracticalSocket.h"
-
 #include "FreeRTOS.h"
 #include "task.h"
 #include "thread.hpp"
 #include "ticks.hpp"
 #include "semaphore.hpp"
-#include "hecate/protos/imu.pb.hpp"
+
+#include "core/shil/PracticalSocket.h"
+
+#include "core/hecate/protos/imu.pb.hpp"
 
 namespace shil {
   class IMU : public cpp_freertos::Thread {

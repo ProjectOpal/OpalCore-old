@@ -9,7 +9,7 @@
 // writer preffered. For access to objects, just include this file.
 */
 
-#include "hecate/hecate.hpp"
+#include "core/hecate/hecate.hpp"
 
 using namespace core;
 
