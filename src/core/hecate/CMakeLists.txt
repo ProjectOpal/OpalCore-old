@@ -30,7 +30,7 @@ set(MODULE_NAME "hecate")
 set(SRCS "hecate.cpp")
 # Set if you have a protos folder that is being compiled. Note: This assumes
 #   the protos are located under a protos folder.
-set(HAS_PROTOS FALSE)
+set(HAS_PROTOS TRUE)
 # Set the modules this module requires. All modules require freertos as a base
 set(MODULE_REQUIREMENTS "freertos")
 # Set the version of the module.
