@@ -14,7 +14,7 @@
 # Run: python3 nanopb_cpp.py <nanopb_file.pb.h>
 """
 import glob
-import re, sys
+import re, sys, os
 
 # TODO @smr277: Create default constructor for protos
 
@@ -50,14 +50,19 @@ def DeconsrtuctNanoPBVar(nanoPBvar_name):
 
 # Start of script
 
-pb_h_file = []
-if len(sys.argv) > 1:
+pb_h_file = None
+file_write_path = ""
+if len(sys.argv) == 2:
   pb_h_file = sys.argv[1]
+elif len(sys.argv) == 3:
+  pb_h_file = sys.argv[1]
+  file_write_path = sys.argv[2]
 else:
-  print("ERROR: No input files")
+  print("ERROR: No input file")
+  sys.exit()
 
 re_var_name = re.compile('typedef struct.*?{[\s\S]*?}([\s\S]*?);')
-with open(pb_h_file, "r+") as f:
+with open(os.path.join(file_write_path, pb_h_file), "r+") as f:
   data = "".join([line for line in f])
   structs = re.findall(re_var_name, data)
   deconstructed_structs = []

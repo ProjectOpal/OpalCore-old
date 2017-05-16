@@ -19,7 +19,7 @@
 #include "thread.hpp"
 #include "ticks.hpp"
 #include "semaphore.hpp"
-#include "imu.pb.hpp"
+#include "hecate/protos/imu.pb.hpp"
 
 namespace shil {
   class IMU : public cpp_freertos::Thread {

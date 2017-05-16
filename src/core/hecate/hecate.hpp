@@ -9,8 +9,8 @@
 // writer preffered. For access to objects, just include this file.
 */
 
-#include "imu.pb.hpp"
-#include "core.pb.hpp"
+#include "hecate/protos/imu.pb.hpp"
+#include "hecate/protos/core.pb.hpp"
 #include "read_write_lock.hpp"
 
 namespace core {

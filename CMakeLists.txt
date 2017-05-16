@@ -6,13 +6,11 @@ project(PROJECT_OPAL C CXX)
 
 # location of nanopb top level directory
 set(NANOPB_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/nanopb)
-# set(TOOLS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tools)
-
-# add nanopb cmake to modules
+# Add the Nanopb directory to this build.
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${NANOPB_DIRS}/extra")
+set(NANOPB_SRC_ROOT_FOLDER ${NANOPB_DIRS})
 find_package(Nanopb REQUIRED)
 include_directories(${NANOPB_INCLUDE_DIRS})
-include(${CMAKE_CURRENT_SOURCE_DIR}/extras/CMakeLists.txt)
 
 ################# FreeRTOS C++ COMPILATION #####################
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/freertos-addons)
@@ -23,9 +21,8 @@ endif(NOT ${CMAKE_CROSSCOMPILING})
 
 ################# Main COMPILATION #####################
 
-# Add the directories with the
-
-# add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/src/core/hecate")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 add_executable(main src/main.cpp)
-target_link_libraries(main freertos)
+# Define which libraries we want to add here.
+target_link_libraries(main freertos shil hecate)
