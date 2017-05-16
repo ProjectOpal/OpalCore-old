@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(PROJECT_OPAL C CXX)
+project(project_opal C CXX)
 # set(CMAKE_VERBOSE_MAKEFILE "1")
 
 ################# PROTO COMPILATION #####################
@@ -23,6 +23,6 @@ endif(NOT ${CMAKE_CROSSCOMPILING})
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/src")
 
-add_executable(main src/main.cpp)
+add_executable(project_opal src/main.cpp)
 # Define which libraries we want to add here.
-target_link_libraries(main freertos shil hecate)
+target_link_libraries(project_opal freertos shil hecate)

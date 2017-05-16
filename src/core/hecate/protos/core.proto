@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-package core.messages;
-
-message HecateWrapper {
-  uint64 timestamp = 1;
-  bytes message = 2;
-}
