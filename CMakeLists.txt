@@ -22,8 +22,9 @@ endif(NOT ${CMAKE_CROSSCOMPILING})
 ################# Main COMPILATION #####################
 include(${CMAKE_BINARY_DIR}/../extras/CMakeLists.txt)
 
+add_executable(project_opal src/main.cpp)
+
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/src")
 
-add_executable(project_opal src/main.cpp)
 # Define which libraries we want to add here.
-target_link_libraries(project_opal freertos shil hecate)
+target_link_libraries(project_opal freertos shil hecate stabalization)

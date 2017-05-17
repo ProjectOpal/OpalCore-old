@@ -1,0 +1,8 @@
+// Author: Sam Rosenstein (samr37l@gmail.com)
+
+
+syntax = "proto3";
+
+message Servo {
+  int32
+}

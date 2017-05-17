@@ -1,0 +1,11 @@
+
+syntax = "proto3";
+
+package fixedWing.aircraftDefinitions;
+
+message Simple {
+  sint32 aileron = 1;
+  sint32 elevator = 2;
+  sint32 rudder = 3;
+  sint32 throttle = 4;
+}

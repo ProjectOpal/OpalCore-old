@@ -7,7 +7,6 @@
 */
 
 #include "core/shil/imu.hpp"
-#include "core/hecate/hecate.hpp"
 
 using namespace core;
 using namespace core::sensors;
@@ -60,6 +59,8 @@ namespace shil {
                 my_location,
                 -1,
                 static_cast<int32_t>(imu_internal->airspeed_kt * 51.4444)};
+        // Change this in the future:
+        Hecate::comp_state.Write(this->actual_state);
        } catch(SocketException ex) {
         // This fails due to context switching. However...it seems to work even
         //    without a critical section.

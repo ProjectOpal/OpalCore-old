@@ -6,6 +6,9 @@
 //
 */
 
+#ifndef IMU_SHIL_H
+#define IMU_SHIL_H
+
 #include <stdio.h>
 #include <iostream>
 #include <memory>
@@ -20,7 +23,9 @@
 #include "core/shil/PracticalSocket.h"
 
 #include "core/hecate/protos/imu.pb.hpp"
+#include "core/hecate/hecate.hpp"
 
+// TODO(@smr277): Change this to a Timer
 namespace shil {
   class IMU : public cpp_freertos::Thread {
    public:
@@ -44,3 +49,5 @@ namespace shil {
   };
 
 } // namespace SHIL
+
+#endif // IMU_SHIL_H

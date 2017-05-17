@@ -9,6 +9,9 @@
 // writer preffered. For access to objects, just include this file.
 */
 
+#ifndef HECATE_H
+#define HECATE_H
+
 #include "core/hecate/protos/imu.pb.hpp"
 #include "core/hecate/protos/core.pb.hpp"
 #include "read_write_lock.hpp"
@@ -33,17 +36,21 @@ namespace core {
     // TODO(@smr277): Find a way to read without copying memory
     //                maybe return a const &, but need to find a simple
     //                way to grab and release the mutex
-    bool Read(T *return_t) {
+    inline bool Read(T *return_t) {
       Lock->ReaderLock();
       memcpy(return_t, box, sizeof(T));
       Lock->ReaderUnlock();
       return true;
     }
-    bool Write(const T &box_orig) {
+    inline bool Write(const T &box_orig) {
       Lock->WriterLock();
       memcpy(box, &box_orig, sizeof(T));
       Lock->WriterUnlock();
       return true;
+    }
+
+    const T* operator->() {
+      return const_cast<T*>(box);
     }
    private:
     cpp_freertos::ReadWriteLockPreferWriter *Lock;
@@ -78,5 +85,6 @@ namespace core {
    private:
     Hecate();
   };
+} // namespace core
 
-}
+#endif // HECATE_H
