@@ -37,3 +37,8 @@ build/*
 
 *.DS_STORE
 
+# Python things
+*_pycache_
+*.pyc
+tools/test/*
+

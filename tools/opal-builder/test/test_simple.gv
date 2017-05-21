@@ -1,7 +1,0 @@
-digraph "Your current OpalPilot configuration" {
-	rankdir=LR size="16,10"
-	-7552962962169894380 [label="core::complex::ModuleA"]
-	-300445862776623922 [label="core::complex::ModuleB"]
-		-7552962962169894380 -> -300445862776623922 [label="core::complex::ProtoBar"]
-		-300445862776623922 -> -7552962962169894380 [label="core::complex::ProtoFoo"]
-}
