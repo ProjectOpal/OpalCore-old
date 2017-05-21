@@ -1,4 +1,5 @@
 import unittest, os, shutil, logging, sys
+from tinydb import TinyDB, Query
 
 import opalbuilder
 
@@ -142,6 +143,71 @@ class TestParseHppFile(unittest.TestCase):
     output = opalbuilder.ModuleFromHeader(self.complex_module_file)
     self.assertEqual(len(output), len(modules))
     self.assertEqual(set(output), modules)
+
+class TestCalculateConnections(unittest.TestCase):
+  complex_module_file = "resources/complex_module.hpp"
+  def test_simple(self):
+    # This should create the graph
+    # ModuleA ---(core::complex::ProtoBar)---> ModuleB
+    # ModuleB ---(core::complex::ProtoFoo)---> ModuleA
+    modules = [opalbuilder.OpalModule(
+                    path=self.complex_module_file,
+                    name="core::complex::ModuleA",
+                    inputs=[("core::complex::ProtoFoo", "proto_foo")],
+                    outputs=[("core::complex::ProtoBar", "proto_bar")]),
+              opalbuilder.OpalModule(
+                path=self.complex_module_file,
+                name="core::complex::ModuleB",
+                inputs=[("core::complex::ProtoBar", "proto_bar")],
+                outputs=[("core::complex::ProtoFoo", "proto_foo")])]
+    correct_graph = {
+      (modules[0], "core::complex::ProtoBar"): [modules[1]],
+      (modules[1], "core::complex::ProtoFoo"): [modules[0]],
+    }
+    db = TinyDB('test/db.json')
+    db.purge()
+    graph = opalbuilder.CalculateConnections(modules, tinydb=db)
+    db.close()
+    self.assertEqual(graph, correct_graph)
+    opalbuilder.VisualizeGraph(graph, "test/test_simple.gv")
+
+  def test_complex(self):
+    # This should create the graph
+    # ModuleA ---(core::complex::ProtoBar)---> ModuleB
+    # ModuleA ---(core::complex::ProtoFoo)---> ModuleB, ModuleC
+    # ModuleB ---(core::ProtoFoo)---> ModuleC
+    # ModuleC ---(core::complex::ProtoBar)---> ModuleB
+    modules = [opalbuilder.OpalModule(
+                    path=self.complex_module_file,
+                    name="core::complex::ModuleA",
+                    inputs=[],
+                    outputs=[("core::complex::ProtoBar", "proto_bar"),
+                             ("core::complex::ProtoFoo", "proto_foo")]),
+              opalbuilder.OpalModule(
+                path=self.complex_module_file,
+                name="core::complex::ModuleB",
+                inputs=[("core::complex::ProtoBar", "proto_bar"),
+                        ("core::complex::ProtoFoo", "proto_foo")],
+                outputs=[("core::ProtoFoo", "proto_foobar")]),
+              opalbuilder.OpalModule(
+                path=self.complex_module_file,
+                name="core::complex::ModuleC",
+                inputs=[("core::complex::ProtoFoo", "proto_foobar"),
+                        ("core::ProtoFoo", "proto_bar")],
+                outputs=[("core::complex::ProtoBar", "proto_foo")]),
+              ]
+    correct_graph = {
+      (modules[0], "core::complex::ProtoBar"): [modules[1]],
+      (modules[0], "core::complex::ProtoFoo"): [modules[1], modules[2]],
+      (modules[1], "core::ProtoFoo"): [modules[2]],
+      (modules[2], "core::complex::ProtoBar"): [modules[1]],
+    }
+    db = TinyDB('test/db.json')
+    db.purge()
+    graph = opalbuilder.CalculateConnections(modules, tinydb=db)
+    db.close()
+    self.assertEqual(graph, correct_graph)
+    opalbuilder.VisualizeGraph(graph, "test/test_complex.gv")
 
 if __name__ == '__main__':
   unittest.main()

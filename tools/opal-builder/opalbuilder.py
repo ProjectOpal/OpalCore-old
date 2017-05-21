@@ -27,8 +27,10 @@
 #   Store module information in tinydb
 #   This should be done for each compile time
 
-import os, re, json
+import os, re, json, sys, pprint
 import CppHeaderParser
+from tinydb import TinyDB, Query
+from graphviz import Digraph #NOTE: Need to have GraphViz installed!!
 
 MODULE_FILE = "module.opal"
 MODULE_CLASS_NAME = "OpalModule"
@@ -74,6 +76,9 @@ class OpalModule:
     return True
   def __hash__(self):
     return hash(self.path+self.name)
+  def __dict__(self):
+    return {'path': self.path, 'name': self.name, 'inputs': self.inputs,
+            'outputs': self.outputs}
 
   def AddInput(self, proto_name):
     self.inputs.append(proto_name)
@@ -115,10 +120,13 @@ def ParseModule(file_dir):
   # Load JSON data from .opal file
   json_data = open(os.path.join(file_dir, MODULE_FILE)).read()
   data = json.loads(json_data)
+  modules = []
   for hdr in data['header_files']:
     hdr_path = os.path.join(file_dir, hdr)
     with open(hdr_path, 'r') as hdr_file:
-      ModuleFromHeader(hdr_file)
+      found_modules = ModuleFromHeader(hdr_file)
+      if (found_modules):
+        modules += found_modules
 
 # Given a header file, find the modules and create the module structure.
 # If the header file can't be parsed, returns None
@@ -133,9 +141,7 @@ def ModuleFromHeader(filename):
     cpp_hdr = CppHeaderParser.CppHeader(filename)
   except:
     return None
-
   opal_modules = list(filter(filter_for_module, list(cpp_hdr.classes.items())))
-
   modules = []
   for module in opal_modules:
     cur_opal_module = OpalModule()
@@ -146,7 +152,6 @@ def ModuleFromHeader(filename):
       variables = module[1].get('properties').get('public')
     except:
       continue
-
     for variable in variables:
       input_proto = INPUT_SHARED_VAR_REGEX.search(variable.get('type'))
       if (input_proto):
@@ -158,6 +163,75 @@ def ModuleFromHeader(filename):
         continue
     modules.append(cur_opal_module)
   return modules
+
+# Creates a graph that connect the nodes with the same input and output types
+# The graph is a dict with the key is
+#   (OpalModule, output_type:str) -> [OpalModule...]
+def CalculateConnections(opal_modules, tinydb=None):
+  if (tinydb is None):
+    return
+  for mod in opal_modules:
+    ModuleInsertDB(mod, tinydb)
+  graph = {}
+  for mod in DBAllModules(tinydb):
+    opal_mod = DBtoModule(mod)
+    for (output_type , _) in opal_mod.outputs:
+      # Create a new node with this module and output type
+      # Add an edge from this node to the modules that have an input of this
+      #   output_type
+      graph[(opal_mod, output_type)] = DBFindModulesWithInputType(output_type,
+                                                                  tinydb)
+  # TODO: Graph connects all inputs and outputs of the same type. User input
+  #     will be required in order to differentiate between
+  return graph
+
+# Creates a database storeable object (easy to search) from an opal module
+# Updates dictionary
+def ModuleInsertDB(module, db):
+  db_dict = {}
+  db_dict['db_inputs'] = [x[0] for x in module.inputs]
+  db_dict['db_outputs'] = [x[0] for x in module.outputs]
+  db_dict.update(module.__dict__())
+  db.insert(db_dict)
+
+# Read in a tinydb dict and create an opal module from it
+# returns an OpalModule object
+def DBtoModule(db_readin):
+  mod_dict = db_readin.copy()
+  mod_dict['inputs'] = [tuple(x) for x in mod_dict['inputs']]
+  mod_dict['outputs'] = [tuple(x) for x in mod_dict['outputs']]
+  mod_dict.pop('db_inputs')
+  mod_dict.pop('db_outputs')
+  return OpalModule(**mod_dict)
+
+# Find all modules that have the input type of this output type
+# For example, if you have moduleA with output_type proto_foo, you
+# can use this to find all modules with input_type proto_foo.
+# Returns a list of OpalModule objects
+def DBFindModulesWithInputType(output_type, db):
+  db_modules = Query()
+  opal_mods = []
+  for mod in db.search(db_modules.db_inputs.any([output_type])):
+    opal_mods.append(DBtoModule(mod))
+  return opal_mods
+
+# Return a list of all the modules.
+def DBAllModules(db):
+  return db.all()
+
+# Visualize a graph
+def VisualizeGraph(graph, filename):
+  dot = Digraph(name='Your current OpalPilot configuration')
+  dot.attr(rankdir='LR', size='16,10')
+  opal_mods = set([x[0] for x in graph.keys()])
+  for mod in opal_mods:
+    dot.node(str(hash(mod)), mod.name)
+  for ((node , output_type), input_node_list)  in graph.items():
+    for input_node in input_node_list:
+      dot.edge(str(hash(node)),  str(hash(input_node)), label = output_type)
+  dot.render(filename, view=True)
+
+
 
 
 

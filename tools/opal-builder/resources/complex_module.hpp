@@ -48,6 +48,15 @@ namespace core {
      private:
       int SomeFunction(int some_var);
     };
+
+    class NotAModule : public SomeClass {
+     public:
+      NoInputModule() : core::Module(10) {};
+      InputSharedVariable<core::complex::ProtoFoo> proto_foo;
+      InputSharedVariable<core::complex::ProtoFoo> proto_foobar;
+     private:
+      int SomeFunction(int some_var);
+    };
   } // namespace complex
 } // namespace core
 
