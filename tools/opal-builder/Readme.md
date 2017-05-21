@@ -14,4 +14,4 @@ Opal builder performs many items, but overall it helps a developer and users con
 - Automatically creates the main `CMakeLists.txt` file for cached compiling
 
 ### GUI
-The only GUI currently is the graph presentation like the following: ![](OpalCore/tools/opal-builder/resources/example_graph.jpg)
+The only GUI currently is the graph presentation like the following: ![graph_example](https://github.com/projectopal/OpalCore/raw/master/tools/opal-builder/resources/example_graph.jpg)
