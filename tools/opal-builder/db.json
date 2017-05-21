@@ -1,0 +1,1 @@
+{"_default": {"1": {"path": "/path/to/something", "name": "fooname", "inputs": ["foofoo", "foobar"]}, "2": {"path": "/path/to/somethingelse", "name": "barname", "inputs": ["barbar", "foofoo"]}}}
